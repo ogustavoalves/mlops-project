@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.env
+
+# MLflow & modelos
+mlruns/
+mlartifacts/
+models/
+
+# Dados
+data/processed/
+
+# Editor
+.vscode/
+.idea/
+
+# Docker
+*.log
+
+# Poetry (caso NÃO use poetry)
+# poetry.lock
+
+# Jupyter
+.ipynb_checkpoints/

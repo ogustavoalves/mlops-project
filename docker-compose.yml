@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  mlflow:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/app/mlruns
+
+  fastapi:
+    build: ./api
+    ports:
+      - "8000:8000"
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    depends_on:
+      - mlflow
