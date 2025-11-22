@@ -16,4 +16,4 @@ COPY . .
 EXPOSE 5000
 
 #Runtime command -- runs mlflow server
-CMD ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000", "--backend-store-uri", "./mlruns", "--default-artifact-root", "file:./mlruns"]
+CMD ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000", "--backend-store-uri", "./mlruns", "--default-artifact-root", "file:/app/mlruns"]

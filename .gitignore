@@ -19,7 +19,7 @@ data/processed/
 # Docker
 *.log
 
-# Poetry (caso NÃO use poetry)
+# Poetry 
 # poetry.lock
 
 # Jupyter
