@@ -10,10 +10,14 @@ COPY requirements.txt .
 #Install the requirements
 RUN pip install -r requirements.txt
 
+RUN mkdir -p /app/mlruns
+
+RUN chmod -R 777 /app/mlruns
+
 #Copy the entire content of the current folder
 COPY . .
 
 EXPOSE 5000
 
 #Runtime command -- runs mlflow server
-CMD ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000", "--backend-store-uri", "./mlruns", "--default-artifact-root", "file:/app/mlruns"]
+CMD ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000", "--backend-store-uri", "file:/app/mlruns"]
