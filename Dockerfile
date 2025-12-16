@@ -11,7 +11,7 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 #Copy the entire content of the current folder
-COPY . .
+# COPY . .
 
 EXPOSE 5000
 
