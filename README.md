@@ -6,8 +6,14 @@ Este projeto implementa um pipeline simples de MLOps utilizando Docker, MLflow e
 
 No diretório raiz — onde está localizado o arquivo `docker-compose.yml` — execute:
 
+*Iniciar serviços*
 ```bash
 docker compose up --build
+```
+*Ajuste de hiperparâmetros, treinamentos e registros no MLflow*
+Em seguida, rode:
+```bash
+python3 main.py
 ```
 
 ### Acessando MLflow UI
@@ -37,4 +43,5 @@ A API de inferência estará disponível no endpoint:
 }
 ```
 A resposta retornará a predição do modelo para o caso enviado.
+
 
