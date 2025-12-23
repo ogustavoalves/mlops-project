@@ -11,11 +11,11 @@ from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier
 import mlflow
 # Leitura da base
-dataset_path = '../data/raw/heart.csv'
+dataset_path = 'data/raw/heart.csv' # Removido '../' para funcionar dentro do container
 dataset = pd.read_csv(dataset_path)
 
 # Definir o tracking ui
-mlflow.set_tracking_uri(uri='http://localhost:5000')
+# mlflow.set_tracking_uri(uri='http://localhost:5000')
 # Definindo o experimento do registro
 response = mlflow.set_experiment('Heart disease experiment')
 
@@ -23,7 +23,6 @@ X = dataset.iloc[:, 0:13].values
 y = dataset.iloc[:, 13].values
 
 X_train, X_test, y_train, y_test, = train_test_split(X, y, test_size=0.2, random_state=0) 
-
 
 
 # Tunning de Hiperparâmetros

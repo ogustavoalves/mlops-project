@@ -1,7 +1,9 @@
 
 services:
   mlflow:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "5000:5000"
     volumes:
@@ -13,5 +15,14 @@ services:
       - "8000:8000"
     environment:
       - MLFLOW_TRACKING_URI=http://mlflow:5000
+    depends_on:
+      - mlflow
+  
+  training-script:
+    build: 
+      context: .
+      dockerfile:  scripts/Dockerfile
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000 # variável de ambiente para conexão com o MLflow e registro dos modelos
     depends_on:
       - mlflow

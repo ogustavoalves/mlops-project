@@ -8,6 +8,7 @@ venv/
 mlruns/
 mlartifacts/
 models/
+notebooks/
 
 # Dados
 data/processed/
