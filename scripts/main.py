@@ -61,7 +61,8 @@ knn_params = {
 lr_params = {
     'tol': [0.0001, 0.00001, 0.000001],
     'C': [1.0, 1.5, 2.0],
-    'solver': ['lbfgs', 'sag', 'saga']
+    'solver': ['lbfgs', 'sag', 'saga'],
+    'max_iter': [1000, 1500, 3000]
 }
 
 # Support vector machine
@@ -73,9 +74,10 @@ svm_params = {
 
 # Neural network classifier
 neural_net_params = {
-    'activation': ['relu', 'logistic', 'tahn'],
+    'activation': ['identity', 'logistic', 'relu', 'tanh'],
     'solver': ['adam', 'sgd'],
-    'batch_size': [10, 56]
+    'batch_size': [10, 56],
+    'max_iter': [1000, 1500, 3000]
 }
 
 all_params = {

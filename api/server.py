@@ -5,7 +5,8 @@ import numpy as np
 import mlflow
 import os
 
-mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "http://127.0.0.1:5000"))
+# mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "http://127.0.0.1:5000"))
+mlflow.set_tracking_uri(os.environ['MLFLOW_TRACKING_URI'])
 app = FastAPI()
 
 try: 

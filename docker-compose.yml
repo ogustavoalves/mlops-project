@@ -10,7 +10,9 @@ services:
       - ./mlruns:/app/mlruns
 
   fastapi:
-    build: ./api
+    build: 
+      context:  .
+      dockerfile: api/Dockerfile
     ports:
       - "8000:8000"
     environment:
