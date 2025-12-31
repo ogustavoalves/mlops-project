@@ -81,24 +81,28 @@ The startup order is managed automatically:
 
 ## Testing inference
 
-```bash
-curl -X POST http://localhost:8000/predict \
-  -H "Content-Type: application/json" \
-  -d '{
-    "age": 63,
-    "sex": 1,
-    "cp": 0,
-    "trestbps": 145,
-    "chol": 233,
-    "fbs": 1,
-    "restecg": 0,
-    "thalach": 150,
-    "exang": 0,
-    "oldpeak": 2.3,
-    "slope": 0,
-    "ca": 0,
-    "thal": 1
-  }'
+Inference method will be available at:
+
+`POST http://localhost:8000/predict`
+
+*JSON input example:* 
+```json
+{
+  "age": 54,
+  "sex": 1,
+  "cp": 0,
+  "trestbps": 120,
+  "chol": 188,
+  "fbs": 0,
+  "restecg": 1,
+  "thalach": 113,
+  "exang": 0,
+  "oldpeak": 1.4,
+  "slope": 1,
+  "ca": 1,
+  "thal": 3
+}
+>>>>>>> 2716189 (Fix formatting issues in README.md)
 ```
 
 **Expected response:**
