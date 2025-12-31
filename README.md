@@ -1,24 +1,28 @@
 # MLOps Project
 
-Este projeto implementa um pipeline simples de MLOps utilizando Docker, MLflow e uma API de inferência para servir o modelo.
-
-## Como executar o projeto
+This project implements a simple MLOps pipeline using Docker, MLflow and a API (FastAPI) to serve the inference of the model.
+## Running the project
 
 No diretório raiz — onde está localizado o arquivo `docker-compose.yml` — execute:
+In the same directory level to the file `docker-compose.yml`, run the command:
 
 ```bash
 docker compose up --build
 ```
 
-### Acessando MLflow UI
-Com os containers ativos, abra o navegador e acesse:
+### Access to the MLflow UI
+
+Once the containers are running, open your browser and access:
+
 `http://localhost:5000`
 
-### Testando a inferência do modelo
-A API de inferência estará disponível no endpoint:
+### Testing Inference 
+
+Inference method will be available at:
+
 `POST http://localhost:8000/predict`
 
-**Exemplo de payload JSON
+**JSON Payload example: 
 ```json
 {
   "age": 54,
@@ -36,5 +40,6 @@ A API de inferência estará disponível no endpoint:
   "thal": 3
 }
 ```
-A resposta retornará a predição do modelo para o caso enviado.
+
+The model's answer will be `True` (1) or `False` (0), indicating whether the patient has heart disease, based on the input data.
 
