@@ -22,7 +22,7 @@ Inference method will be available at:
 
 `POST http://localhost:8000/predict`
 
-**JSON Payload example: 
+*JSON Payload example:* 
 ```json
 {
   "age": 54,
@@ -42,4 +42,5 @@ Inference method will be available at:
 ```
 
 The model's answer will be `True` (1) or `False` (0), indicating whether the patient has heart disease, based on the input data.
+
 
