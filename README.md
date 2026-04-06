@@ -45,3 +45,8 @@ A API de inferência estará disponível no endpoint:
 A resposta retornará a predição do modelo para o caso enviado.
 
 
+## Subir servidor MLflow individualmente
+
+```bash
+  docker run -p 5000:5000 -v "$(pwd)/mlruns:/app/mlruns" -v "$(pwd)/mlflow.db:/app/mlflow.db" mlops-project/mlflow:1.3
+```
