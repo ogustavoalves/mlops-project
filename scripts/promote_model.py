@@ -1,4 +1,3 @@
-import mlflow
 from mlflow.tracking import MlflowClient
 
 def promote_champion(model_name: str):

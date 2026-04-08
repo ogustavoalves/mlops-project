@@ -1,9 +1,9 @@
+import os
+import mlflow
+import pandas as pd
+from typing import Optional
 from fastapi import FastAPI
 from pydantic import BaseModel
-import mlflow.sklearn
-import pandas as pd
-import mlflow
-import os
 from load_model import get_model 
 
 mlflow.set_tracking_uri(os.environ['MLFLOW_TRACKING_URI'])
@@ -23,15 +23,20 @@ class InputData(BaseModel):
     slope: int
     ca: int
     thal: int
+    debug: Optional[bool] = False
+
+@app.get('/health', status_code=200)
+async def health_check():
+    return {'healthy': 'true'}
 
 @app.get('/')
 def welcome_message():
-    return {'message': "API is working!"}
+    return {'message': "FastAPI server is up."}
 
 @app.post('/predict')
 def predict (data: InputData):
     try:
-        decision_tree_model = get_model()
+        model = get_model()
     except Exception as e:
         return {"error": "Model unavailable.", "detail": str(e)}
     
@@ -45,8 +50,13 @@ def predict (data: InputData):
             data.exang, data.oldpeak, data.slope, data.ca, data.thal
         ]], columns=columns)
 
-    y_pred = decision_tree_model.predict(features)
+    if data.debug:
+        y_pred_proba = model.predict_proba(features)
+        res = {int(cls): float(prob) for cls, prob in zip(model.classes_, y_pred_proba[0])}
+        
+        return {'prediction': res}
     
+    y_pred = model.predict(features)
     return {'prediction': int(y_pred[0])}
 
 if __name__ == "__main__":
