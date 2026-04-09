@@ -1,19 +1,13 @@
+import os
+import mlflow
+import pandas as pd
+from typing import Optional
 from fastapi import FastAPI
 from pydantic import BaseModel
-import mlflow.sklearn
-import numpy as np
-import mlflow
-import os
+from load_model import get_model 
 
-mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "http://127.0.0.1:5000"))
+mlflow.set_tracking_uri(os.environ['MLFLOW_TRACKING_URI'])
 app = FastAPI()
-
-try: 
-    decision_tree_model = mlflow.sklearn.load_model('models:/Decision-tree-classifier/1')
-    print('Modelo carregado com sucesso')
-except Exception as e:
-    print('Erro ao carregar o modelo:', e)
-    decision_tree_model = None
 
 class InputData(BaseModel):
     age: int
@@ -29,17 +23,40 @@ class InputData(BaseModel):
     slope: int
     ca: int
     thal: int
+    debug: Optional[bool] = False
+
+@app.get('/health', status_code=200)
+async def health_check():
+    return {'healthy': 'true'}
 
 @app.get('/')
 def welcome_message():
-    return {'message': "API is working!"}
+    return {'message': "FastAPI server is up."}
 
 @app.post('/predict')
 def predict (data: InputData):
-    features = np.array([[data.age, data.sex, data.cp, data.trestbps, data.chol, data.fbs, data.restecg, data.thalach, data.exang, data.oldpeak, data.slope, data.ca, data.thal]])
-
-    y_pred = decision_tree_model.predict(features)
+    try:
+        model = get_model()
+    except Exception as e:
+        return {"error": "Model unavailable.", "detail": str(e)}
     
+    # Construir Dataframe de features
+    # Columnas
+    columns = ["age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach", "exang", "oldpeak", "slope", "ca", "thal"]
+    # Valores
+    features = pd.DataFrame([[
+            data.age, data.sex, data.cp, data.trestbps,
+            data.chol, data.fbs, data.restecg, data.thalach,
+            data.exang, data.oldpeak, data.slope, data.ca, data.thal
+        ]], columns=columns)
+
+    if data.debug:
+        y_pred_proba = model.predict_proba(features)
+        res = {int(cls): float(prob) for cls, prob in zip(model.classes_, y_pred_proba[0])}
+        
+        return {'prediction': res}
+    
+    y_pred = model.predict(features)
     return {'prediction': int(y_pred[0])}
 
 if __name__ == "__main__":

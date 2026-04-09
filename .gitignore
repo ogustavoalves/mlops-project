@@ -8,6 +8,8 @@ venv/
 mlruns/
 mlartifacts/
 models/
+mlflow.db
+mlflow-data/
 
 # Dados
 data/processed/
@@ -24,3 +26,8 @@ data/processed/
 
 # Jupyter
 .ipynb_checkpoints/
+# Notebooks não devem ficar na Main
+notebooks/
+
+
+todo.md 
