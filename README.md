@@ -1,8 +1,8 @@
 # MLOps Project
 
-Pipeline de MLOps para classificação de doenças cardíacas utilizando o [Heart Disease Dataset](https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset) do Kaggle. O projeto treina, registra e serve múltiplos modelos de classificação via API REST, orquestrando tudo com Docker Compose.
+MLOps pipeline for heart disease classification using the [Heart Disease Dataset](https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset) from Kaggle. The project trains, registers, and serves multiple classification models via REST API, orchestrating everything with Docker Compose.
 
-## Arquitetura
+## Architecture
 
 ```
 docker compose up
@@ -12,17 +12,17 @@ docker compose up
        │  (service_healthy)               │
        ▼                                  │
 [training-script]                         │ tracking + artifacts
-  - Treina 7 modelos                      │
-  - Registra no MLflow                    │
-  - Promove campeão                       │
+  - Trains 7 models                       │
+  - Registers in MLflow                   │
+  - Promotes champion                     │
        │  (service_completed_successfully)│
        ▼                                  │
    [FastAPI] ─────────────────────────────┘
-  - Carrega modelo do MLflow
-  - Serve predições em /predict
+  - Loads model from MLflow
+  - Serves predictions at /predict
 ```
 
-## Modelos treinados
+## Trained models
 
 - Decision Tree
 - Random Forest
@@ -32,9 +32,9 @@ docker compose up
 - SVC
 - MLP Classifier
 
-Cada modelo possui seu próprio preprocessador adequado ao tipo de algoritmo (OrdinalEncoder para modelos baseados em árvore, OneHotEncoder + StandardScaler para os demais).
+Each model has its own preprocessor suited to the algorithm type (OrdinalEncoder for tree-based models, OneHotEncoder + StandardScaler for the others).
 
-## Estrutura do projeto
+## Project structure
 
 ```
 mlops_project/
@@ -58,28 +58,28 @@ mlops_project/
 └── requirements.txt
 ```
 
-## Como executar
+## How to run
 
-No diretório raiz, execute:
+In the root directory, run:
 
 ```bash
 docker compose up --build
 ```
 
-A ordem de inicialização é gerenciada automaticamente:
-1. MLflow sobe e aguarda ficar saudável
-2. Training script treina e registra os modelos
-3. FastAPI sobe com os modelos disponíveis
+The startup order is managed automatically:
+1. MLflow starts and waits to become healthy
+2. Training script trains and registers the models
+3. FastAPI starts with the models available
 
-## Acessando os serviços
+## Accessing the services
 
-| Serviço | URL |
+| Service | URL |
 |---|---|
 | MLflow UI | http://localhost:5000 |
-| API de inferência | http://localhost:8000 |
-| Docs da API | http://localhost:8000/docs |
+| Inference API | http://localhost:8000 |
+| API Docs | http://localhost:8000/docs |
 
-## Testando a inferência
+## Testing inference
 
 ```bash
 curl -X POST http://localhost:8000/predict \
@@ -101,19 +101,19 @@ curl -X POST http://localhost:8000/predict \
   }'
 ```
 
-**Resposta esperada:**
+**Expected response:**
 ```json
 {"prediction": 1}
 ```
 
-Para obter as probabilidades por classe, adicione `"debug": true` ao payload:
+To get the probabilities per class, add `"debug": true` to the payload:
 ```json
 {"prediction": {"0": 0.23, "1": 0.77}}
 ```
 
-## Subir o MLflow individualmente
+## Running MLflow individually
 
-Na primeira execução, crie o arquivo de banco antes de subir o container:
+On the first run, create the database file before starting the container:
 
 ```bash
 touch mlflow.db
@@ -123,24 +123,24 @@ docker run -p 5000:5000 \
   mlops-project/mlflow:1.2
 ```
 
-> Nas execuções seguintes o `touch mlflow.db` pode ser omitido.
+> On subsequent runs, `touch mlflow.db` can be omitted.
 
-## Features do dataset
+## Dataset features
 
-| Feature | Descrição |
+| Feature | Description |
 |---|---|
-| age | Idade do paciente |
-| sex | Sexo (1 = masculino, 0 = feminino) |
-| cp | Tipo de dor no peito (0–3) |
-| trestbps | Pressão arterial em repouso (mm Hg) |
-| chol | Colesterol sérico (mg/dl) |
-| fbs | Glicemia em jejum > 120 mg/dl (1 = verdadeiro) |
-| restecg | Resultado do eletrocardiograma em repouso (0–2) |
-| thalach | Frequência cardíaca máxima atingida |
-| exang | Angina induzida por exercício (1 = sim) |
-| oldpeak | Depressão do ST induzida por exercício |
-| slope | Inclinação do segmento ST de pico (0–2) |
-| ca | Número de vasos principais coloridos (0–3) |
-| thal | Talassemia (0–3) |
+| age | Patient age |
+| sex | Sex (1 = male, 0 = female) |
+| cp | Chest pain type (0–3) |
+| trestbps | Resting blood pressure (mm Hg) |
+| chol | Serum cholesterol (mg/dl) |
+| fbs | Fasting blood sugar > 120 mg/dl (1 = true) |
+| restecg | Resting electrocardiographic results (0–2) |
+| thalach | Maximum heart rate achieved |
+| exang | Exercise-induced angina (1 = yes) |
+| oldpeak | ST depression induced by exercise |
+| slope | Slope of the peak exercise ST segment (0–2) |
+| ca | Number of major vessels colored (0–3) |
+| thal | Thalassemia (0–3) |
 
-**Target:** `1` = presença de doença cardíaca, `0` = ausência
+**Target:** `1` = presence of heart disease, `0` = absence
