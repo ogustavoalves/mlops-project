@@ -8,7 +8,7 @@ def build_preprocessor(numerical_cols: list, categorical_cols: list, strategy: s
             transformers=[
                 ('categorical', OrdinalEncoder(
                     handle_unknown='use_encoded_value',
-                    unknown_value=-1  # obrigatório quando handle_unknown='use_encoded_value'
+                    unknown_value=-1  # needed when handle_unknown='use_encoded_value'
                 ), categorical_cols),
                 ('numerical', 'passthrough', numerical_cols)
             ])
