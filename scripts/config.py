@@ -89,3 +89,77 @@ PIPELINES = {
     ) 
 }
 
+PIPELINES_FOR_TUNNING = {
+        'DecisionTreeClassifier': (
+            Pipeline([
+                ('prep', build_preprocessor(NUMERICAL_COLS, CATEGORICAL_COLS, strategy='tree')), 
+                ('classifier', DecisionTreeClassifier())
+        ]),{
+            'classifier__criterion': ['gini', 'entropy'],
+            'classifier__splitter': ['best', 'random'],
+            'classifier__min_samples_split': [2, 5, 10],
+            'classifier__min_samples_leaf': [1, 5, 10]
+        }
+    ),
+        'RandomForestClassifier': (
+            Pipeline([
+                ('prep', build_preprocessor(NUMERICAL_COLS, CATEGORICAL_COLS, strategy='tree')), 
+                ('classifier', RandomForestClassifier())
+        ]),{
+            'classifier__criterion': ['gini', 'entropy'],
+            'classifier__n_estimators': [10, 40, 100, 150],
+            'classifier__min_samples_split': [2, 5, 10],
+            'classifier__min_samples_leaf': [1, 5, 10]
+        }
+    ),
+        'GradientBoostingClassifier': (
+            Pipeline([
+                ('prep', build_preprocessor(NUMERICAL_COLS, CATEGORICAL_COLS, strategy='tree')), 
+                ('classifier', GradientBoostingClassifier())
+        ]), {
+            'classifier__loss': ['log_loss', 'exponential'],
+            'classifier__learning_rate': [0.1, 0.01, 0.001, 0.0001],
+            'classifier__n_estimators': [25, 50, 100, 200, 300, 500],
+            'classifier__criterion': ['friedman_mse', 'squared_error']
+        }
+    ),
+        'KNN': (
+            Pipeline([
+                ('prep', build_preprocessor(NUMERICAL_COLS, CATEGORICAL_COLS, strategy='knn')), 
+                ('classifier', KNeighborsClassifier())
+        ]),{
+            'classifier__n_neighbors': [3, 5, 10, 20],
+            'classifier__p': [1, 2]
+        }
+    ),
+        'LogisticRegression': (
+            Pipeline([
+                ('prep', build_preprocessor(NUMERICAL_COLS, CATEGORICAL_COLS, strategy='linear')), 
+                ('classifier', LogisticRegression(max_iter=2000))
+        ]),{
+            'classifier__tol': [0.0001, 0.00001, 0.000001],
+            'classifier__C': [1.0, 1.5, 2.0],
+            'classifier__solver': ['lbfgs', 'sag', 'saga']
+        }
+    ),
+        'SVC': (
+            Pipeline([
+                ('prep', build_preprocessor(NUMERICAL_COLS, CATEGORICAL_COLS, strategy='linear')), 
+                ('classifier', SVC(probability=True))
+        ]),{
+            'classifier__tol': [0.001, 0.0001, 0.00001],
+            'classifier__C': [1.0, 1.5, 2.0],
+            'classifier__kernel': ['rbf', 'linear', 'poly', 'sigmoid']
+        }
+    ),
+        'MLPC': (
+        Pipeline([
+            ('prep', build_preprocessor(NUMERICAL_COLS, CATEGORICAL_COLS, strategy='linear')), 
+            ('classifier', MLPClassifier(max_iter=3500))
+        ]),{
+            'classifier__activation': ['relu', 'logistic', 'tanh'],
+            'classifier__solver': ['adam', 'sgd'],
+            'classifier__batch_size': [10, 56]
+        }
+    ) 
+}
