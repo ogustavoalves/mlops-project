@@ -20,7 +20,7 @@ else:
     print()
 
 # Setting up MLflow's tracking ui
-mlflow.set_tracking_uri(uri='http://localhost:5000')
+mlflow.set_tracking_uri(uri='http://mlflow:5000')
 # Setting up experiment's name
 response = mlflow.set_experiment('Heart disease pipeline experiment')
 

@@ -13,8 +13,8 @@ services:
       retries: 10
       start_period: 30s
     volumes:
-      - ./mlruns:/app/mlruns
-      - ./mlflow-data:/app
+      - ./mlruns:/app/mlruns:z
+      - ./mlflow-data:/app:z
 
   training-script:
     build: 
@@ -22,10 +22,11 @@ services:
       dockerfile: scripts/Dockerfile
     environment:
       - MLFLOW_TRACKING_URI=http://mlflow:5000 # variável de ambiente para conexão com o MLflow e registro dos modelos
+    profiles: ['train']
     depends_on:
       mlflow:
         condition: service_healthy
-
+        
   fastapi:
     build: 
       context:  .
@@ -34,10 +35,12 @@ services:
       - "8000:8000"
     environment:
       - MLFLOW_TRACKING_URI=http://mlflow:5000
+    profiles: ['serve']
     depends_on:
       mlflow:
         condition: service_healthy
       training-script:
         condition: service_completed_successfully
+        required: false
     volumes:
       - ./mlruns:/app/mlruns
