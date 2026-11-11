@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 venv/
 .env
+.pytest_cache/
 
 # MLflow & models
 mlruns/
@@ -31,3 +32,10 @@ notebooks/
 
 
 todo.md 
+
+# Docker data volumes
+grafana_data/
+prometheus_data/
+mlruns/
+
+# 

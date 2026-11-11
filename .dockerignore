@@ -1,2 +1,4 @@
 venv/
 README.md
+grafana_data/
+prometheus_data/

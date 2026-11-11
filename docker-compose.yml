@@ -44,3 +44,24 @@ services:
         required: false
     volumes:
       - ./mlruns:/app/mlruns
+
+  prometheus:
+    image: prom/prometheus:latest
+    profiles:
+      - serve
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro,z
+      - ./prometheus_data:/prometheus:z
+
+  grafana:
+    image: grafana/grafana:latest
+    profiles:
+      - serve
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana_data:/var/lib/grafana:z
+    depends_on:
+      - prometheus

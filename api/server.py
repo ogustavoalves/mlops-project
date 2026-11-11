@@ -2,13 +2,32 @@ import os
 import mlflow
 import pandas as pd
 from typing import Optional
-from fastapi import FastAPI
+from fastapi import FastAPI, Response, Request
 from pydantic import BaseModel
-from load_model import get_model 
+from load_model import get_model
+from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
 
 mlflow.set_tracking_uri(os.environ['MLFLOW_TRACKING_URI'])
 app = FastAPI()
 
+# Prometheus client 
+# counter of total predictions
+PREDICTIONS_TOTAL = Counter('api_predictions', "Total number of predictions made")
+INFERENCE_TIME = Histogram('api_inference_duration_seconds', "Time of each inference made")
+API_RESPONSES_TOTAL = Counter(
+        'api_responses_total',
+        "Total de respostas da API por código de estado HTTP",
+        ['status_code']
+)
+
+@app.middleware("http")
+async def monitor_http_status(request: Request, call_next):
+    response = await call_next(request)
+    
+    API_RESPONSES_TOTAL.labels(status_code=str(response.status_code)).inc()
+    
+    return response
+        
 class InputData(BaseModel):
     age: int
     sex: int
@@ -41,23 +60,30 @@ def predict (data: InputData):
         return {"error": "Model unavailable.", "detail": str(e)}
     
     # Construir Dataframe de features
-    # Columnas
+    # Columns
     columns = ["age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach", "exang", "oldpeak", "slope", "ca", "thal"]
-    # Valores
+    # Values  ]
     features = pd.DataFrame([[
             data.age, data.sex, data.cp, data.trestbps,
             data.chol, data.fbs, data.restecg, data.thalach,
             data.exang, data.oldpeak, data.slope, data.ca, data.thal
         ]], columns=columns)
 
-    if data.debug:
-        y_pred_proba = model.predict_proba(features)
-        res = {int(cls): float(prob) for cls, prob in zip(model.classes_, y_pred_proba[0])}
+    # Increments the counter when a prediction is made
+    PREDICTIONS_TOTAL.inc()
+    with INFERENCE_TIME.time():
+        if data.debug:
+            y_pred_proba = model.predict_proba(features)
+            res = {int(cls): float(prob) for cls, prob in zip(model.classes_, y_pred_proba[0])}
+            
+            return {'prediction': res}
         
-        return {'prediction': res}
-    
-    y_pred = model.predict(features)
-    return {'prediction': int(y_pred[0])}
+        y_pred = model.predict(features)
+        return {'prediction': int(y_pred[0])}
+
+@app.get("/metrics")
+def metrics():
+    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 if __name__ == "__main__":
     import uvicorn
